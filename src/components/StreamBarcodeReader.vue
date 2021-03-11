@@ -27,7 +27,7 @@ export default {
 
     mounted() {
         if (!this.isMediaStreamAPISupported) {
-            throw new Exception("Media Stream API is not supported");
+            this.$emit("error", "Media Stream API is not supported");
             return;
         }
 
@@ -44,12 +44,14 @@ export default {
 
     methods: {
         start() {
-            this.codeReader.decodeFromVideoDevice(
+            this.codeReader.decodeFromInputVideoDevice(
                 undefined,
                 this.$refs.scanner,
                 (result, err) => {
                     if (result) {
                         this.$emit("decode", result.text);
+                    } else if (err) {
+                        this.$emit("error", err.text);
                     }
                 }
             );
